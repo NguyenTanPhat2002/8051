@@ -1,0 +1,75 @@
+C51 COMPILER V9.60.7.0   CD4094                                                            12/21/2024 14:16:08 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE CD4094
+OBJECT MODULE PLACED IN .\Objects\CD4094.obj
+COMPILER INVOKED BY: D:\keil C\C51\BIN\C51.EXE User\CD4094.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Main;.\User) DEBUG P
+                    -RINT(.\Listings\CD4094.lst) TABS(2) OBJECT(.\Objects\CD4094.obj)
+
+line level    source
+
+   1          /********************************** (C) COPYRIGHT *******************************
+   2          * File name          : CD4094.c
+   3          * Author             : Oneled
+   4          * Version            : V1.0
+   5          * Date               : 20/12/2024
+   6          * Description        : CD4094 Shift Register Control Library
+   7                      - Implements data output to the CD4094 shift register
+   8                      - Controls data, clock, and strobe lines to manage data transmission
+   9                      - Supports dynamic data display via an array input
+  10          
+  11                      NOTE: Ensure proper connection of CD4094 pins to microcontroller outputs
+  12          ********************************************************************************/
+  13          
+  14          #include "CD4094.h"
+  15          
+  16          /*******************************************************************************
+  17          * Function Name       : IC4094_Out
+  18          * Description         : Outputs data to the CD4094 shift register
+  19          * Input Parameters    : unsigned char *array_show - Pointer to the array containing data to display
+  20                                  int _len - Length of the array
+  21          * Output              : None
+  22          * Return              : None
+  23          *******************************************************************************/
+  24          void IC4094_Out (unsigned char *array_show , int _len)
+  25          {
+  26   1        unsigned char index_current_bit;   // Index for current bit being processed
+  27   1        unsigned char _byte;               // Byte to be sent to the shift register
+  28   1        signed char index_current_byte;    // Index for current byte in the array
+  29   1        
+  30   1        for(index_current_byte = 0; index_current_byte < _len; index_current_byte++)
+  31   1        {
+  32   2          IC4094_strobe = 0;  // Disable strobe before sending data
+  33   2          _byte = *(array_show + _len - index_current_byte - 1); // Retrieve data from array in reverse order
+  34   2          for(index_current_bit = 0; index_current_bit < 8; index_current_bit++)
+  35   2          {
+  36   3            
+  37   3            IC4094_data = _byte & (0x80 >> index_current_bit); // Extract the current bit to send
+  38   3            IC4094_clock = 0; // Set clock low to prepare for sending the bit
+  39   3            IC4094_clock = 1; // Set clock high to latch the bit into the shift register
+  40   3            
+  41   3          }
+  42   2        }
+  43   1        IC4094_strobe = 1; // Enable strobe to output the data to the outputs
+  44   1      }
+  45          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    113    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       6
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.7.0   CD4094                                                            12/21/2024 14:16:08 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
